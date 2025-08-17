@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Save & Invest — Simple Finance Tools</title>
+  <meta name="description" content="Free, simple tools for saving and investing: compound interest, DCA, goal planner, and emergency fund calculators." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💹</text></svg>">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">💹</span>
+        <span class="brand-text">Save &amp; Invest</span>
+      </div>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="#savings">Savings</a>
+        <a href="#investing">Investing</a>
+        <a href="#goals">Goals</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <h1>Grow your money with simple tools</h1>
+      <p class="lead">Free calculators for <strong>compound interest</strong>, <strong>DCA investing</strong>, <strong>goal planning</strong>, and an <strong>emergency fund</strong>.</p>
+      <div class="hero-cta">
+        <a class="button primary" href="#savings">Try the calculators</a>
+        <a class="button" href="#goals">Plan a goal</a>
+      </div>
+    </section>
+
+    <section id="savings" class="container grid two">
+      <article class="card">
+        <h2>Compound Interest (Savings)</h2>
+        <form id="savingsForm" class="form-grid" autocomplete="on">
+          <label>Initial amount
+            <input type="number" id="sv-principal" min="0" step="0.01" value="1000" required>
+          </label>
+          <label>Monthly contribution
+            <input type="number" id="sv-monthly" min="0" step="0.01" value="200" required>
+          </label>
+          <label>Annual interest (%)
+            <input type="number" id="sv-rate" min="0" max="100" step="0.01" value="3.5" required>
+          </label>
+          <label>Years
+            <input type="number" id="sv-years" min="0" step="1" value="10" required>
+          </label>
+          <button class="button primary" type="submit">Calculate</button>
+          <button class="button" type="button" id="sv-reset">Reset</button>
+        </form>
+        <div class="results">
+          <div class="stat"><span class="label">Final balance</span><span id="sv-final" class="value">—</span></div>
+          <div class="stat"><span class="label">Total contributed</span><span id="sv-contrib" class="value">—</span></div>
+          <div class="stat"><span class="label">Interest earned</span><span id="sv-interest" class="value">—</span></div>
+        </div>
+        <canvas id="sv-chart" aria-label="Savings growth chart"></canvas>
+      </article>
+
+      <article id="investing" class="card">
+        <h2>Investing (DCA / SIP)</h2>
+        <form id="investForm" class="form-grid" autocomplete="on">
+          <label>Initial amount
+            <input type="number" id="iv-principal" min="0" step="0.01" value="0" required>
+          </label>
+          <label>Monthly investment
+            <input type="number" id="iv-monthly" min="0" step="0.01" value="300" required>
+          </label>
+          <label>Expected annual return (%)
+            <input type="number" id="iv-rate" min="-100" max="100" step="0.01" value="7" required>
+          </label>
+          <label>Years
+            <input type="number" id="iv-years" min="0" step="1" value="15" required>
+          </label>
+          <button class="button primary" type="submit">Project</button>
+          <button class="button" type="button" id="iv-reset">Reset</button>
+        </form>
+        <div class="results">
+          <div class="stat"><span class="label">Projected value</span><span id="iv-final" class="value">—</span></div>
+          <div class="stat"><span class="label">Total invested</span><span id="iv-contrib" class="value">—</span></div>
+          <div class="stat"><span class="label">Growth</span><span id="iv-growth" class="value">—</span></div>
+        </div>
+        <canvas id="iv-chart" aria-label="Investment growth chart"></canvas>
+      </article>
+    </section>
+
+    <section id="goals" class="container grid two">
+      <article class="card">
+        <h2>Goal Planner</h2>
+        <form id="goalForm" class="form-grid">
+          <label>Goal name
+            <input type="text" id="gl-name" placeholder="e.g., House Down Payment" required>
+          </label>
+          <label>Target amount
+            <input type="number" id="gl-target" min="0" step="0.01" value="20000" required>
+          </label>
+          <label>Years to target
+            <input type="number" id="gl-years" min="1" step="1" value="5" required>
+          </label>
+          <label>Expected annual return (%)
+            <input type="number" id="gl-rate" min="-100" max="100" step="0.01" value="4">
+          </label>
+          <button class="button primary" type="submit">Add Goal</button>
+        </form>
+        <div id="goalsList" class="goal-list" role="region" aria-live="polite"></div>
+      </article>
+
+      <article class="card">
+        <h2>Emergency Fund</h2>
+        <form id="efForm" class="form-grid">
+          <label>Monthly expenses
+            <input type="number" id="ef-expenses" min="0" step="0.01" value="1200" required>
+          </label>
+          <label>Months to cover
+            <input type="number" id="ef-months" min="1" step="1" value="6" required>
+          </label>
+          <button class="button primary" type="submit">Calculate</button>
+        </form>
+        <div class="results">
+          <div class="stat"><span class="label">Recommended fund</span><span id="ef-total" class="value">—</span></div>
+          <div class="muted small">Tip: Keep this in a high-yield savings account, separate from spending.</div>
+        </div>
+      </article>
+    </section>
+
+    <section id="faq" class="container card">
+      <h2>FAQ & Notes</h2>
+      <details>
+        <summary>What assumptions do these calculators make?</summary>
+        <p>Rates are compounded monthly. Investment returns are estimates and can be negative. Fees and taxes are not included.</p>
+      </details>
+      <details>
+        <summary>Is this financial advice?</summary>
+        <p>No. This is educational information only. Consider speaking with a licensed advisor for advice specific to your situation.</p>
+      </details>
+      <details>
+        <summary>How is my data stored?</summary>
+        <p>Inputs and goals are saved to your browser’s localStorage so they persist on your device only.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="muted">© <span id="year"></span> Save & Invest. Educational use only — not financial advice.</p>
+      <a href="https://github.com/" target="_blank" rel="noopener">Source & Deploy on GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>
